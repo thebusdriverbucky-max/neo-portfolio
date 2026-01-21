@@ -4,55 +4,65 @@ import { FaTrash, FaEnvelopeOpen, FaEnvelope } from 'react-icons/fa';
 import { Contact } from '@prisma/client';
 import { format } from 'date-fns';
 import Loader from '@/components/ui/Loader';
-import { useLoader } from '@/hooks/useLoader'; // Импортируем хук
+import { useState } from 'react';
 
 interface MessageCardProps {
   message: Contact;
 }
 
 export default function MessageCard({ message }: MessageCardProps) {
-  const { isLoading, withLoader } = useLoader(); // Используем хук
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleDelete = () => {
-    if (!confirm('Вы уверены, что хотите удалить это сообщение?')) return;
+  const handleDelete = async () => {
+    if (!confirm('Удалить это сообщение?')) return;
 
-    withLoader(async () => {
-      try {
-        const response = await fetch(`/api/contacts?id=${message.id}`, {
-          method: 'DELETE',
-        });
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          alert('Ошибка при удалении сообщения.');
-        }
-      } catch (error) {
-        console.error('Failed to delete message:', error);
-        alert('Ошибка при удалении сообщения.');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`/api/contacts?id=${message.id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.reload();
+      } else {
+        alert('Ошибка: ' + data.error);
       }
-    });
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Ошибка при удалении сообщения');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleMarkAsRead = () => {
-    if (message.read) return;
+  const handleMarkAsRead = async () => {
+    setIsLoading(true);
 
-    withLoader(async () => {
-      try {
-        const response = await fetch('/api/contacts', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: message.id, read: true }),
-        });
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          alert('Ошибка при обновлении сообщения.');
-        }
-      } catch (error) {
-        console.error('Failed to mark as read:', error);
-        alert('Ошибка при обновлении сообщения.');
+    try {
+      const response = await fetch('/api/contacts', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: message.id }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.reload();
+      } else {
+        alert('Ошибка: ' + data.error);
       }
-    });
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Ошибка при обновлении сообщения');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
