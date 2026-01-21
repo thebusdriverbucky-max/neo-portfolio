@@ -6,7 +6,7 @@ interface ButtonProps {
   children: ReactNode
   href?: string
   onClick?: () => void
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'destructive_outline'
   size?: 'sm' | 'md' | 'lg'
   className?: string
   disabled?: boolean
@@ -30,6 +30,8 @@ export function Button({
     secondary: 'bg-white text-dark shadow-lg hover:shadow-xl hover:bg-gradient-to-br hover:from-slate-900 hover:via-slate-800 hover:to-slate-700 hover:text-white hover:border-primary border-2 border-transparent hover:shadow-[0_0_20px_rgba(255,165,0,0.6)]',
     outline: 'bg-transparent border-2 border-primary text-primary hover:bg-gradient-to-r hover:from-primary hover:to-secondary hover:text-white hover:border-transparent shadow-md hover:shadow-xl',
     ghost: 'bg-transparent text-primary hover:bg-gradient-to-r hover:from-primary/10 hover:to-secondary/10',
+        destructive: 'bg-red-600 text-white shadow-lg hover:shadow-xl hover:bg-red-700',
+        destructive_outline: 'bg-transparent border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white shadow-md hover:shadow-xl',
   }
 
   const sizes = {

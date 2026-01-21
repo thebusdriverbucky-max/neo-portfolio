@@ -89,6 +89,7 @@ export async function POST(request: NextRequest) {
 
       await transporter.sendMail(mailOptions);
       console.log('✅ Email sent successfully to neodesignengineering@gmail.com');
+
     } catch (emailError) {
       console.error('⚠️ Email sending failed (but message saved to DB):', emailError);
     }
@@ -107,6 +108,78 @@ export async function POST(request: NextRequest) {
     console.error('❌ Error processing contact:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to send message' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH contact (mark as read)
+export async function PATCH(request: NextRequest) {
+  try {
+    const id = request.nextUrl.searchParams.get('id');
+    const { read } = await request.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const updatedContact = await prisma.contact.update({
+      where: { id },
+      data: { read },
+    });
+
+    return NextResponse.json({ success: true, data: updatedContact });
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to update contact' },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE contact
+export async function DELETE(request: NextRequest) {
+  try {
+    const id = request.nextUrl.searchParams.get('id');
+    const { ids } = await request.json().catch(() => ({ ids: null })); // Gracefully handle empty body
+
+    if (id) {
+      // Single delete
+      await prisma.contact.delete({
+        where: { id },
+      });
+      return NextResponse.json({
+        success: true,
+        message: 'Contact deleted successfully',
+      });
+    } else if (ids && Array.isArray(ids) && ids.length > 0) {
+      // Bulk delete
+      await prisma.contact.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+      return NextResponse.json({
+        success: true,
+        message: `${ids.length} contacts deleted successfully`,
+      });
+    } else {
+      // No valid parameters provided
+      return NextResponse.json(
+        { success: false, error: 'ID or an array of IDs is required' },
+        { status: 400 }
+      );
+    }
+  } catch (error) {
+    console.error('Error deleting contact(s):', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete contact(s)' },
       { status: 500 }
     );
   }

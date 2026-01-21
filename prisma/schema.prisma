@@ -95,6 +95,7 @@ model Contact {
   name      String
   email     String
   message   String    @db.Text
+  read      Boolean   @default(false)
   createdAt DateTime  @default(now())
 
   @@index([createdAt])

@@ -2,6 +2,7 @@ import { auth } from '@/app/api/auth/[...nextauth]/route'
 import { redirect } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
 import { AdminHeader } from '@/components/admin/AdminHeader'
+import { prisma } from '@/lib/prisma'
 
 export default async function AdminLayout({
   children,
@@ -14,9 +15,13 @@ export default async function AdminLayout({
     redirect('/admin/login')
   }
 
+  const unreadMessages = await prisma.contact.count({
+    where: { read: false },
+  })
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700">
-      <AdminSidebar />
+      <AdminSidebar unreadMessages={unreadMessages} />
       <div className="lg:pl-64">
         <AdminHeader user={session.user} />
         <main className="p-6">
