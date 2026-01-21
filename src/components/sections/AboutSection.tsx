@@ -5,8 +5,11 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import WaveDivider from '@/components/ui/WaveDivider';
+import { useTranslations } from 'next-intl';
 
 export function AboutSection() {
+  const t = useTranslations('About');
+
   return (
     <section className="relative py-16 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700" id="about">
       <div className="container">
@@ -21,7 +24,7 @@ export function AboutSection() {
           >
             <Image
               src="/mainpage.png"
-              alt="Разработчик"
+              alt={t('imageAlt')}
               fill
               className="object-cover"
               priority
@@ -38,41 +41,40 @@ export function AboutSection() {
             className="text-white"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Обо мне
+              {t('title')}
             </h2>
             <p className="text-lg mb-6 leading-relaxed text-white/90">
-              Привет! Я фулл-стек разработчик с опытом создания современных веб-приложений.
-              Специализируюсь на Next.js, React и TypeScript.
+              {t('description1')}
             </p>
             <p className="text-lg mb-8 leading-relaxed text-white/90">
-              Помогаю бизнесу и частным клиентам воплощать идеи в жизнь через качественный код и продуманный дизайн.
+              {t('description2')}
             </p>
 
             <div className="grid grid-cols-3 gap-6 mb-8">
               <div className="text-center bg-white/10 backdrop-blur-sm p-4 rounded-xl">
-                <div className="text-4xl font-bold mb-2">5+</div>
-                <div className="text-sm text-white/80">Лет опыта</div>
+                <div className="text-4xl font-bold mb-2">{t('stats.experience.value')}</div>
+                <div className="text-sm text-white/80">{t('stats.experience.label')}</div>
               </div>
               <div className="text-center bg-white/10 backdrop-blur-sm p-4 rounded-xl">
-                <div className="text-4xl font-bold mb-2">10+</div>
-                <div className="text-sm text-white/80">Проектов</div>
+                <div className="text-4xl font-bold mb-2">{t('stats.projects.value')}</div>
+                <div className="text-sm text-white/80">{t('stats.projects.label')}</div>
               </div>
               <div className="text-center bg-white/10 backdrop-blur-sm p-4 rounded-xl">
-                <div className="text-4xl font-bold mb-2">99%</div>
-                <div className="text-sm text-white/80">Довольных</div>
+                <div className="text-4xl font-bold mb-2">{t('stats.clients.value')}</div>
+                <div className="text-sm text-white/80">{t('stats.clients.label')}</div>
               </div>
             </div>
 
             <div className="flex justify-center md:justify-start">
               <Button href="/about" variant="secondary" size="lg">
-                Узнать больше <ArrowRight className="ml-2 w-5 h-5" />
+                {t('more')} <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Волна в конце секции */}
+
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <WaveDivider color="dark" />
       </div>

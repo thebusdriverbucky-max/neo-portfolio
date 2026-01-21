@@ -2,39 +2,59 @@ import { prisma } from '@/lib/prisma';
 import ServiceCard from '@/components/ui/ServiceCard';
 import ScrollReveal from '@/components/animations/ScrollReveal';
 import { Button } from '@/components/ui/Button';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import WaveDivider from '@/components/ui/WaveDivider';
+import { getTranslations } from 'next-intl/server';
+import type { Service } from '@prisma/client';
 
 export async function ServicesSection() {
+  const t = await getTranslations('Services');
+
   // Тестовые данные (fallback если БД недоступна)
-  const fallbackServices = [
+  const fallbackServices: Service[] = [
     {
       id: '1',
-      title: 'Веб-разработка',
-      description: 'Создание современных веб-сайтов и приложений',
-      icon: 'code',
+      title: t('items.webDev.title'),
+      description: t('items.webDev.description'),
+      icon: 'Code',
+      price: null,
+      features: [],
+      order: 1,
+      createdAt: new Date(),
     },
     {
       id: '2',
-      title: 'UI/UX Дизайн',
-      description: 'Проектирование удобных интерфейсов',
-      icon: 'palette',
+      title: t('items.uiUx.title'),
+      description: t('items.uiUx.description'),
+      icon: 'Palette',
+      price: null,
+      features: [],
+      order: 2,
+      createdAt: new Date(),
     },
     {
       id: '3',
-      title: 'Backend',
-      description: 'Разработка серверной части и API',
-      icon: 'server',
+      title: t('items.backend.title'),
+      description: t('items.backend.description'),
+      icon: 'Layers',
+      price: null,
+      features: [],
+      order: 3,
+      createdAt: new Date(),
     },
     {
       id: '4',
-      title: 'SEO Оптимизация',
-      description: 'Продвижение сайтов в поисковых системах',
-      icon: 'trending-up',
+      title: t('items.seo.title'),
+      description: t('items.seo.description'),
+      icon: 'Wrench',
+      price: null,
+      features: [],
+      order: 4,
+      createdAt: new Date(),
     },
   ];
 
-  let services = fallbackServices;
+  let services: Service[] = fallbackServices;
 
   try {
     services = await prisma.service.findMany({
@@ -52,10 +72,16 @@ export async function ServicesSection() {
         <ScrollReveal>
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Мои <span className="bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">Услуги</span>
+              {t.rich('title', {
+                highlight: (chunks) => (
+                  <span className="bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">
+                    {chunks}
+                  </span>
+                ),
+              })}
             </h2>
             <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-              Полный спектр услуг по разработке и дизайну веб-проектов
+              {t('subtitle')}
             </p>
           </div>
         </ScrollReveal>
@@ -71,7 +97,7 @@ export async function ServicesSection() {
         <div className="text-center mt-12">
           <Link href="/services">
             <Button variant="outline" size="lg">
-              Все услуги
+              {t('allServices')}
             </Button>
           </Link>
         </div>

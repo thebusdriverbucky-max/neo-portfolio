@@ -1,16 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
-
-const navLinks = [
-  { href: '/', label: 'Главная' },
-  { href: '/about', label: 'Обо мне' },
-  { href: '/services', label: 'Услуги' },
-  { href: '/portfolio', label: 'Портфолио' },
-  { href: '/contact', label: 'Контакты' },
-];
+import { useTranslations } from 'next-intl';
+import LanguageSwitcher from '../ui/LanguageSwitcher';
 
 export interface NavigationProps {
   onLinkClick?: () => void;
@@ -19,7 +12,16 @@ export interface NavigationProps {
 }
 
 export default function Navigation({ onLinkClick, mobile = false, isScrolled = false }: NavigationProps) {
+  const t = useTranslations('Navigation');
   const pathname = usePathname();
+
+  const navLinks = [
+    { href: '/', label: t('home') },
+    { href: '/about', label: t('about') },
+    { href: '/services', label: t('services') },
+    { href: '/portfolio', label: t('portfolio') },
+    { href: '/contact', label: t('contact') },
+  ];
 
   return (
     <nav className={mobile ? 'flex flex-col space-y-4' : 'hidden md:flex md:items-center md:gap-8'}>
@@ -49,6 +51,7 @@ export default function Navigation({ onLinkClick, mobile = false, isScrolled = f
           </Link>
         );
       })}
+      <LanguageSwitcher isScrolled={isScrolled} />
     </nav>
   );
 }

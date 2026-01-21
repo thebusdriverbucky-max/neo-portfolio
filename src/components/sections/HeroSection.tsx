@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion'
 import { ArrowRight, Code2 } from 'lucide-react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/routing'
 import WaveDivider from '@/components/ui/WaveDivider'
 import CodeParticles from '@/components/effects/CodeParticles'
 import {
@@ -26,6 +27,8 @@ const technologies = [
 ]
 
 export function HeroSection() {
+  const t = useTranslations('Hero')
+
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FFA500] via-[#FFB84D] to-[#FFD700] overflow-hidden">
       {/* Анимированный фон с кодом */}
@@ -54,19 +57,19 @@ export function HeroSection() {
             <div className="group inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-400/15 via-orange-400/15 to-[#FFD700]/15 backdrop-blur-md rounded-full border-2 border-slate-900/20 shadow-xl hover:shadow-2xl hover:bg-slate-950/70 hover:border-amber-500/50 transition-all duration-500 cursor-pointer">
               <Code2 className="w-5 h-5 text-slate-900 group-hover:text-amber-400 transition-colors duration-500" />
               <span className="font-bold text-slate-900 group-hover:text-white transition-colors duration-500">
-                Профессиональная веб-разработка
+                {t('badge')}
               </span>
             </div>
           </motion.div>
 
           {/* Заголовок */}
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#0f172a] leading-tight drop-shadow-lg">
-            WEBSITE DEVELOPMENT<br />& DESIGN
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-[#0f172a] leading-tight drop-shadow-lg break-words max-w-full">
+            {t('title')}
           </h1>
 
           {/* Подзаголовок */}
           <p className="text-xl md:text-2xl font-semibold max-w-3xl mx-auto leading-relaxed bg-gradient-to-r from-[#6B1F1F] to-[#2A1F16] bg-clip-text text-transparent">
-            Создаю современные, быстрые и красивые веб-сайты
+            {t('subtitle')}
           </p>
 
           {/* Технологии */}
@@ -108,26 +111,26 @@ export function HeroSection() {
 
           {/* Магические кнопки */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
-            <a
+            <Link
               href="/contact"
               className="group relative px-10 py-5 bg-[#0f172a] text-white font-bold text-lg rounded-full shadow-2xl overflow-hidden transition-all duration-500 hover:scale-110 hover:shadow-[0_0_60px_rgba(255,215,0,0.6)]"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-[#FFA500] via-[#FFD700] to-[#FFA500] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
               <span className="relative z-10 flex items-center justify-center gap-3">
-                Связаться
+                {t('contact')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
               </span>
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/portfolio"
               className="group relative px-10 py-5 bg-[#0f172a] text-white font-bold text-lg rounded-full shadow-2xl overflow-hidden transition-all duration-500 hover:scale-110 hover:shadow-[0_0_60px_rgba(255,215,0,0.6)]"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-[#FFA500] via-[#FFD700] to-[#FFA500] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
               <span className="relative z-10 flex items-center justify-center">
-                Портфолио
+                {t('portfolio')}
               </span>
-            </a>
+            </Link>
           </div>
 
         </motion.div>

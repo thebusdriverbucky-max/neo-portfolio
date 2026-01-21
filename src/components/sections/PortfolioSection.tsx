@@ -1,40 +1,62 @@
 import { prisma } from '@/lib/prisma';
 import ProjectCard from '@/components/ui/ProjectCard';
 import ScrollReveal from '@/components/animations/ScrollReveal';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { ArrowRight } from 'lucide-react';
 import WaveDivider from '@/components/ui/WaveDivider';
+import { getTranslations } from 'next-intl/server';
+import type { Project } from '@/types';
 
 export async function PortfolioSection() {
+  const t = await getTranslations('Portfolio');
+
   // Тестовые данные (fallback если БД недоступна)
-  const fallbackProjects = [
+  const fallbackProjects: Project[] = [
     {
       id: '1',
-      title: 'E-commerce платформа',
-      description: 'Современный интернет-магазин с корзиной и оплатой',
-      image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=800&h=600&fit=crop',
-      slug: 'ecommerce-platform',
-      tags: ['Next.js', 'TypeScript', 'Stripe'],
+      title: t('items.ecommerce.title'),
+      description: t('items.ecommerce.description'),
+      imageUrl: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=800&h=600&fit=crop',
+      technologies: ['Next.js', 'TypeScript', 'Stripe'],
+      demoUrl: null,
+      githubUrl: null,
+      longDescription: null,
+      featured: true,
+      order: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       id: '2',
-      title: 'Корпоративный сайт',
-      description: 'Сайт для компании с красивым дизайном',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
-      slug: 'corporate-website',
-      tags: ['React', 'Tailwind', 'Framer Motion'],
+      title: t('items.corporate.title'),
+      description: t('items.corporate.description'),
+      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
+      technologies: ['React', 'Tailwind', 'Framer Motion'],
+      demoUrl: null,
+      githubUrl: null,
+      longDescription: null,
+      featured: true,
+      order: 2,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       id: '3',
-      title: 'Dashboard приложение',
-      description: 'Админ-панель с аналитикой и графиками',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
-      slug: 'dashboard-app',
-      tags: ['Vue.js', 'Chart.js', 'Node.js'],
+      title: t('items.dashboard.title'),
+      description: t('items.dashboard.description'),
+      imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
+      technologies: ['Vue.js', 'Chart.js', 'Node.js'],
+      demoUrl: null,
+      githubUrl: null,
+      longDescription: null,
+      featured: true,
+      order: 3,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   ];
 
-  let projects = fallbackProjects;
+  let projects: Project[] = fallbackProjects;
 
   try {
     projects = await prisma.project.findMany({
@@ -53,10 +75,16 @@ export async function PortfolioSection() {
         <ScrollReveal>
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Избранные <span className="bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">Проекты</span>
+              {t.rich('title', {
+                highlight: (chunks) => (
+                  <span className="bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">
+                    {chunks}
+                  </span>
+                ),
+              })}
             </h2>
             <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-              Посмотрите мои последние работы и достижения
+              {t('subtitle')}
             </p>
           </div>
         </ScrollReveal>
@@ -76,7 +104,7 @@ export async function PortfolioSection() {
           >
             <span className="absolute inset-0 bg-gradient-to-r from-[#FFA500] via-[#FFD700] to-[#FFA500] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
             <span className="relative z-10 flex items-center justify-center gap-3">
-              Все проекты
+              {t('allProjects')}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </span>
           </Link>

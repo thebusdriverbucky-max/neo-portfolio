@@ -1,0 +1,214 @@
+{
+  "Home": {
+    "title": "Home | Portfolio",
+    "description": "Welcome to my portfolio website"
+  },
+  "HomePage": {
+    "title": "Hello world!",
+    "about": "Go to the about page"
+  },
+  "Navigation": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "contact": "Contact"
+  },
+  "Hero": {
+    "badge": "Professional Web Development",
+    "title": "WEBSITE DEVELOPMENT & DESIGN",
+    "subtitle": "Creating modern, fast and beautiful websites",
+    "contact": "Contact",
+    "portfolio": "Portfolio"
+  },
+  "About": {
+    "title": "About Me",
+    "meta": {
+      "title": "About Me | Portfolio",
+      "description": "Learn more about my development experience"
+    },
+    "description1": "Hello! I am a full-stack developer with experience in creating modern web applications. I specialize in Next.js, React, and TypeScript.",
+    "description2": "I help businesses and private clients bring ideas to life through high-quality code and thoughtful design.",
+    "subtitle": "Learn more about my experience and approach to development",
+    "greeting": "Hello! 👋",
+    "skills": {
+      "title": "Technologies"
+    },
+    "experience": {
+      "title": "Work Experience",
+      "freelance": {
+        "title": "Freelance Developer",
+        "period": "2020 - Present",
+        "description": "Developing web applications for clients worldwide"
+      },
+      "frontend": {
+        "title": "Frontend Developer",
+        "period": "2018 - 2020",
+        "description": "Creating client-side web applications"
+      }
+    },
+    "stats": {
+      "experience": {
+        "value": "5+",
+        "label": "Years of Experience"
+      },
+      "projects": {
+        "value": "10+",
+        "label": "Projects"
+      },
+      "clients": {
+        "value": "99%",
+        "label": "Satisfied"
+      }
+    },
+    "more": "Learn More",
+    "imageAlt": "Developer"
+  },
+  "Services": {
+    "title": "Services",
+    "meta": {
+      "title": "Services | Portfolio",
+      "description": "Full range of web development and design services"
+    },
+    "subtitle": "Full range of web development and design services",
+    "allServices": "All Services",
+    "items": {
+      "webDev": {
+        "title": "Web Development",
+        "description": "Creating modern websites and applications"
+      },
+      "uiUx": {
+        "title": "UI/UX Design",
+        "description": "Designing user-friendly interfaces"
+      },
+      "backend": {
+        "title": "Backend",
+        "description": "Server-side and API development"
+      },
+      "seo": {
+        "title": "SEO Optimization",
+        "description": "Website promotion in search engines"
+      }
+    },
+    "whyMe": {
+      "title": "Why Choose Me",
+      "experience": "Years of Experience",
+      "projects": "Projects",
+      "clients": "Satisfied Clients"
+    },
+    "list": {
+      "webDev": {
+        "title": "Web Development",
+        "description": "Creating modern web applications using cutting-edge technologies",
+        "price": "from €500",
+        "features": {
+          "0": "Next.js and React",
+          "1": "Responsive Design",
+          "2": "SEO Optimization",
+          "3": "High Performance"
+        }
+      },
+      "uiUx": {
+        "title": "UI/UX Design",
+        "description": "Designing user-friendly interfaces focusing on user experience",
+        "price": "from €300",
+        "features": {
+          "0": "Prototyping",
+          "1": "Design in Figma",
+          "2": "UX Research",
+          "3": "Design System"
+        }
+      },
+      "ecommerce": {
+        "title": "E-commerce",
+        "description": "Developing online stores with payment system integration",
+        "price": "from €800",
+        "features": {
+          "0": "Stripe Integration",
+          "1": "Product Management",
+          "2": "Cart and Orders",
+          "3": "Admin Panel"
+        }
+      },
+      "mobile": {
+        "title": "Mobile Apps",
+        "description": "Cross-platform mobile application development",
+        "price": "from €1000",
+        "features": {
+          "0": "React Native",
+          "1": "iOS and Android",
+          "2": "Push Notifications",
+          "3": "Offline Mode"
+        }
+      }
+    }
+  },
+  "Portfolio": {
+    "title": "Portfolio",
+    "meta": {
+      "title": "Portfolio | Portfolio",
+      "description": "Check out my latest work and achievements"
+    },
+    "subtitle": "Check out my latest work and achievements",
+    "empty": "Projects coming soon...",
+    "filters": {
+      "all": "All",
+      "websites": "Websites",
+      "apps": "Apps",
+      "design": "Design"
+    },
+    "allProjects": "All Projects",
+    "items": {
+      "ecommerce": {
+        "title": "E-commerce Platform",
+        "description": "Modern online store with cart and payment"
+      },
+      "corporate": {
+        "title": "Corporate Website",
+        "description": "Company website with beautiful design"
+      },
+      "dashboard": {
+        "title": "Dashboard App",
+        "description": "Admin panel with analytics and charts"
+      }
+    }
+  },
+  "Contact": {
+    "title": "Contact Me",
+    "meta": {
+      "title": "Contact | Portfolio",
+      "description": "Contact me to discuss your project"
+    },
+    "subtitle": "Ready to discuss your project. Choose a convenient way to contact!",
+    "items": {
+      "whatsapp": {
+        "label": "WhatsApp",
+        "value": "+357 9779 5295"
+      },
+      "telegram": {
+        "label": "Telegram",
+        "value": "@neofullstackdev"
+      },
+      "email": {
+        "label": "Email",
+        "value": "neodesigneng..."
+      }
+    },
+    "form": {
+      "title": "Contact Me",
+      "name": "Name",
+      "namePlaceholder": "Enter your name",
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "message": "Message",
+      "messagePlaceholder": "Enter your message",
+      "submit": "Send Message"
+    }
+  },
+  "Footer": {
+    "description": "Creating modern web applications",
+    "navigation": "Navigation",
+    "contact": "Contact",
+    "copyright": "All rights reserved."
+  }
+}

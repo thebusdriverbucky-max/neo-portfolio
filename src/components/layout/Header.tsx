@@ -1,12 +1,15 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import Navigation from './Navigation'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
 
 export default function Header() {
+  const t = useTranslations('Navigation')
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -40,23 +43,25 @@ export default function Header() {
                 : 'text-slate-900'
             )}
           >
-            Portfolio
+            {t('portfolio')}
           </Link>
 
-          {/* Desktop Navigation */}
-          <Navigation isScrolled={isScrolled} />
+          <div className="flex items-center gap-4">
+            {/* Desktop Navigation */}
+            <Navigation isScrolled={isScrolled} />
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={cn(
-              'md:hidden p-2 transition-colors duration-300',
-              isScrolled ? 'text-white/90 hover:text-[#FFD700]' : 'text-slate-900'
-            )}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={cn(
+                'md:hidden p-2 transition-colors duration-300',
+                isScrolled ? 'text-white/90 hover:text-[#FFD700]' : 'text-slate-900'
+              )}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}

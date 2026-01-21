@@ -1,10 +1,14 @@
 import PageLayout from '@/components/layout/PageLayout'
 import ProjectCard from '@/components/ui/ProjectCard'
 import { prisma } from '@/lib/prisma'
+import { getTranslations } from 'next-intl/server';
 
-export const metadata = {
-  title: 'Портфолио | Portfolio',
-  description: 'Посмотрите мои последние работы и достижения',
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'Portfolio.meta' });
+  return {
+    title: t('title'),
+    description: t('description')
+  };
 }
 
 async function getProjects() {
@@ -19,17 +23,18 @@ async function getProjects() {
   }
 }
 
-export default async function PortfolioPage() {
+export default async function PortfolioPage({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'Portfolio' });
   const projects = await getProjects()
 
   return (
     <PageLayout
-      title="Мое Портфолио"
-      subtitle="Посмотрите мои последние работы и достижения"
+      title={t('title')}
+      subtitle={t('subtitle')}
     >
       {projects.length === 0 ? (
         <div className="text-center py-20">
-          <p className="text-white/60 text-xl">Проекты скоро появятся...</p>
+          <p className="text-white/60 text-xl">{t('empty')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -41,7 +46,12 @@ export default async function PortfolioPage() {
 
       {/* Фильтры */}
       <div className="mt-16 flex justify-center gap-4 flex-wrap">
-        {['Все', 'Веб-сайты', 'Приложения', 'Дизайн'].map((filter) => (
+        {[
+          t('filters.all'),
+          t('filters.websites'),
+          t('filters.apps'),
+          t('filters.design')
+        ].map((filter) => (
           <button
             key={filter}
             className="px-6 py-3 bg-slate-700/50 text-white rounded-lg border border-amber-500/30 hover:border-amber-500/60 hover:bg-slate-600/50 transition-all"
