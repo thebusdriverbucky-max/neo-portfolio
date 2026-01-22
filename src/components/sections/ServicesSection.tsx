@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import ServiceCard from '@/components/ui/ServiceCard';
 import ScrollReveal from '@/components/animations/ScrollReveal';
 import { Button } from '@/components/ui/Button';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/components/navigation/CustomLink';
 import WaveDivider from '@/components/ui/WaveDivider';
 import { getTranslations } from 'next-intl/server';
 import type { Service } from '@prisma/client';

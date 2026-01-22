@@ -18,7 +18,7 @@ export default function Loader({
   const currentSize = sizes[size];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-fade-in">
       <div className="flex flex-col items-center gap-6">
         {/* Spinner с золотым градиентом */}
         <div className="relative">
@@ -58,7 +58,7 @@ export default function Loader({
 
         {/* Сообщение */}
         {message && (
-          <div className="text-center animate-fadeIn">
+          <div className="text-center animate-fade-in">
             <p className={`text-white font-bold ${currentSize.text} mb-2`}>
               {message}
             </p>

@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Code2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/routing'
+import { Link } from '@/components/navigation/CustomLink'
 import WaveDivider from '@/components/ui/WaveDivider'
 import CodeParticles from '@/components/effects/CodeParticles'
 import {

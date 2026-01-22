@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import ProjectCard from '@/components/ui/ProjectCard';
 import ScrollReveal from '@/components/animations/ScrollReveal';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/components/navigation/CustomLink';
 import { ArrowRight } from 'lucide-react';
 import WaveDivider from '@/components/ui/WaveDivider';
 import { getTranslations } from 'next-intl/server';

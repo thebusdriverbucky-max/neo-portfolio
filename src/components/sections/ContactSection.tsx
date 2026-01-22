@@ -1,123 +1,115 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { MessageCircle, Send, Mail, Copy } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import SectionTitle from '@/components/ui/SectionTitle';
-import { FaPaperPlane } from 'react-icons/fa';
-import Loader from '@/components/ui/Loader';
+import { Alert } from '../ui/Alert';
 
-export default function ContactSection() {
+// Контактный раздел с анимацией и копированием email
+export function ContactSection() {
   const t = useTranslations('Contact');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  const [isLoading, setIsLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    setIsLoading(true);
-
-    try {
-      const response = await fetch('/api/contacts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert('✅ ' + t('successMessage', { default: 'Сообщение отправлено успешно!' }));
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        alert('❌ ' + (data.error || 'Ошибка отправки'));
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      alert('❌ Ошибка отправки. Попробуйте снова.');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText('neodesignengineering@gmail.com');
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
   };
+
+  const contacts = [
+    {
+      icon: MessageCircle,
+      label: t('items.whatsapp.label'),
+      value: '+357 9779 5295',
+      href: 'https://wa.me/35797795295',
+      color: 'bg-green-500',
+    },
+    {
+      icon: Send,
+      label: t('items.telegram.label'),
+      value: '@neofullstackdev',
+      href: 'https://t.me/neofullstackdev',
+      color: 'bg-blue-500',
+    },
+    {
+      icon: Mail,
+      label: t('items.email.label'),
+      value: 'neodesigneng...',
+      fullValue: 'neodesignengineering@gmail.com',
+      color: 'bg-orange-500',
+    },
+  ];
 
   return (
     <>
-      {/* Loader Overlay */}
-      {isLoading && (
-        <Loader 
-          message={t('sending', { default: 'Отправка сообщения...' })} 
-          size="md" 
-        />
-      )}
+      {showAlert && <Alert message="Email copied!" onClose={() => setShowAlert(false)} />}
+      <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700" id="contacts">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              {t('title')}
+            </h2>
+            <p className="text-white/90 text-lg max-w-2xl mx-auto">
+              {t('subtitle')}
+            </p>
+          </motion.div>
 
-      <section id="contact" className="relative py-24 bg-slate-900">
-        {/* Форма */}
-        <div className="container mx-auto px-4">
-          <SectionTitle 
-            title={t('title')}
-            subtitle={t('subtitle')}
-          />
-
-          <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
-            <div>
-              <label className="block text-white mb-2">{t('nameLabel')}</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder={t('namePlaceholder')}
-                required
-                disabled={isLoading}
-                className="w-full px-4 py-3 rounded-lg bg-slate-800 border-2 border-slate-700 text-white focus:border-amber-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-white mb-2">{t('emailLabel')}</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder={t('emailPlaceholder')}
-                required
-                disabled={isLoading}
-                className="w-full px-4 py-3 rounded-lg bg-slate-800 border-2 border-slate-700 text-white focus:border-amber-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-white mb-2">{t('messageLabel')}</label>
-              <textarea
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder={t('messagePlaceholder')}
-                required
-                disabled={isLoading}
-                rows={5}
-                className="w-full px-4 py-3 rounded-lg bg-slate-800 border-2 border-slate-700 text-white focus:border-amber-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all resize-none"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-4 bg-gradient-to-r from-[#FFA500] to-[#FFD700] text-slate-900 font-bold rounded-lg hover:shadow-2xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              {isLoading ? (
-                <>Отправка...</>
-              ) : (
-                <>
-                  <FaPaperPlane />
-                  {t('submitButton')}
-                </>
-              )}
-            </button>
-          </form>
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {contacts.map((contact, index) => {
+              const Icon = contact.icon;
+              if (contact.label === t('items.email.label')) {
+                return (
+                  <motion.div
+                    key={index}
+                    onClick={handleCopyEmail}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.05 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, type: 'spring', stiffness: 300 }}
+                    className="bg-gradient-to-br from-[#FFA500] via-[#FFB84D] to-[#FFD700] rounded-2xl p-6 text-center shadow-2xl cursor-pointer"
+                  >
+                    <div className={`${contact.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-2">{contact.label}</h3>
+                    <div className="flex items-center justify-center">
+                      <Copy className="w-4 h-4 mr-2 text-slate-800" />
+                      <p className="text-slate-800 font-semibold truncate">{contact.value}</p>
+                    </div>
+                  </motion.div>
+                );
+              }
+              return (
+                <motion.a
+                  key={index}
+                  href={contact.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.05 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, type: 'spring', stiffness: 300 }}
+                  className="bg-gradient-to-br from-[#FFA500] via-[#FFB84D] to-[#FFD700] rounded-2xl p-6 text-center shadow-2xl"
+                >
+                  <div className={`${contact.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{contact.label}</h3>
+                  <p className="text-slate-800 font-semibold">{contact.value}</p>
+                </motion.a>
+              );
+            })}
+          </div>
         </div>
       </section>
     </>

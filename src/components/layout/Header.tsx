@@ -1,6 +1,6 @@
 'use client'
 
-import { Link } from '@/i18n/routing'
+import { Link } from '@/components/navigation/CustomLink'
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import Navigation from './Navigation'
@@ -34,9 +34,18 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-         <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">
-           Portfolio
-         </Link>
+          <Link
+            href="/"
+            className={cn(
+              'text-2xl font-bold transition-all duration-300',
+              isScrolled
+                ? 'bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent'
+                : 'text-slate-900'
+            )}
+          >
+            {t('portfolio')}
+          </Link>
+
 
           <div className="flex items-center gap-4">
             {/* Desktop Navigation */}
