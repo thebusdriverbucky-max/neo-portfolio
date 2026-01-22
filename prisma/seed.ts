@@ -16,7 +16,7 @@ async function main() {
     data: [
       {
         title: 'Quadro Arcane',
-        description: 'Полнофункциональное веб-приложение для анализа и визуализации данных',
+        description: 'Test',
         longDescription: 'Quadro Arcane - современная платформа на Next.js 14+ с TypeScript. Включает аутентификацию, дашборды с графиками, интеграцию с API и адаптивный дизайн.',
         imageUrl: '/images/projects/quadroarcane.png',
         demoUrl: 'https://quadro-arcane-demo.vercel.app',

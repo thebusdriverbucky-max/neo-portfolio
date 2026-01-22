@@ -21,7 +21,7 @@ export default async function AboutPage({ params: { locale } }: { params: { loca
       <div className="max-w-4xl mx-auto space-y-12">
         {/* Карточка с фото и текстом */}
         <div className="grid lg:grid-cols-2 gap-8 items-center">
-          <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+          <div className="relative aspect-[562/500] rounded-2xl overflow-hidden shadow-2xl">
             <Image
               src="/aboutpage.png"
               alt="Developer workspace"
