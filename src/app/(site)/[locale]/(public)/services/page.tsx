@@ -73,6 +73,38 @@ export default async function ServicesPage({ params: { locale } }: { params: { l
       ],
       order: 4,
       createdAt: new Date()
+    },
+    {
+      id: '5',
+      title: t('list.integrations.title'),
+      description: t('list.integrations.description'),
+      icon: 'Link',
+      price: t('list.integrations.price'),
+      features: [
+        t('list.integrations.features.0'),
+        t('list.integrations.features.1'),
+        t('list.integrations.features.2'),
+        t('list.integrations.features.3'),
+        t('list.integrations.features.4')
+      ],
+      order: 5,
+      createdAt: new Date()
+    },
+    {
+      id: '6',
+      title: t('list.bugfixing.title'),
+      description: t('list.bugfixing.description'),
+      icon: 'Wrench',
+      price: t('list.bugfixing.price'),
+      features: [
+        t('list.bugfixing.features.0'),
+        t('list.bugfixing.features.1'),
+        t('list.bugfixing.features.2'),
+        t('list.bugfixing.features.3'),
+        t('list.bugfixing.features.4')
+      ],
+      order: 6,
+      createdAt: new Date()
     }
   ]
 
@@ -95,13 +127,13 @@ export default async function ServicesPage({ params: { locale } }: { params: { l
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 rounded-2xl p-6 border-2 border-amber-500/30 text-center">
             <div className="text-5xl font-bold bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent mb-2">
-              5+
+              2+
             </div>
             <p className="text-white/80">{t('whyMe.experience')}</p>
           </div>
           <div className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 rounded-2xl p-6 border-2 border-amber-500/30 text-center">
             <div className="text-5xl font-bold bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent mb-2">
-              50+
+              10+
             </div>
             <p className="text-white/80">{t('whyMe.projects')}</p>
           </div>

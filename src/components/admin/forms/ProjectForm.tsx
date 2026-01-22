@@ -11,7 +11,7 @@ const projectSchema = z.object({
   title: z.string().min(1, 'Название обязательно'),
   description: z.string().min(1, 'Описание обязательно'),
   longDescription: z.string().optional(),
-  imageUrl: z.string().url('Неверный формат URL'),
+  imageUrl: z.string().min(1, 'URL изображения обязателен'),
   demoUrl: z.string().url('Неверный формат URL').optional().or(z.literal('')),
   githubUrl: z.string().url('Неверный формат URL').optional().or(z.literal('')),
   technologies: z.string().min(1, 'Добавьте технологии через запятую'),

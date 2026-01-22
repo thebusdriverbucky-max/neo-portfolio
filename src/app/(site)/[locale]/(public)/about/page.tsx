@@ -45,7 +45,7 @@ export default async function AboutPage({ params: { locale } }: { params: { loca
         <div className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 rounded-2xl p-8 border-2 border-amber-500/30 shadow-2xl">
           <h3 className="text-2xl font-bold text-white mb-6">{t('skills.title')}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Prisma', 'Vite'].map((skill) => (
+            {['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Prisma', 'And More...'].map((skill) => (
               <div key={skill} className="bg-slate-600/30 rounded-lg p-4 text-center border border-amber-500/20 hover:border-amber-500/50 transition-all">
                 <span className="text-white font-semibold">{skill}</span>
               </div>

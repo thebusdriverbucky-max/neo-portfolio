@@ -7,7 +7,7 @@ const projectUpdateSchema = z.object({
   title: z.string().min(1, 'Название обязательно').optional(),
   description: z.string().min(1, 'Описание обязательно').optional(),
   longDescription: z.string().optional(),
-  imageUrl: z.string().url('Неверный формат URL').optional(),
+  imageUrl: z.string().min(1, 'URL изображения обязателен').optional(),
   demoUrl: z.string().url('Неверный формат URL').optional().or(z.literal('')),
   githubUrl: z.string().url('Неверный формат URL').optional().or(z.literal('')),
   technologies: z.array(z.string()).min(1, 'Добавьте хотя бы одну технологию').optional(),
