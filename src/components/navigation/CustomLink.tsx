@@ -2,48 +2,61 @@
 
 import { Link as NextIntlLink } from '@/i18n/routing';
 import { useLoader } from '@/contexts/LoaderContext';
-import { usePathname } from '@/i18n/routing';
-import { ComponentProps, useTransition } from 'react';
+import { usePathname } from 'next/navigation';
+import { ComponentProps, useEffect, useRef } from 'react';
 
 type LinkProps = ComponentProps<typeof NextIntlLink>;
 
 export function Link({ href, onClick, ...props }: LinkProps) {
   const { showLoader, hideLoader } = useLoader();
-  const currentPathname = usePathname();
-  const [isPending, startTransition] = useTransition();
+  const pathname = usePathname();
+  const isNavigatingRef = useRef(false);
+  const minDisplayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef<number>(0);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Вызываем оригинальный onClick если есть
     onClick?.(e);
 
-    // Если клик отменен или это внешняя ссылка - не показываем loader
+    // Если клик отменен - не показываем loader
     if (e.defaultPrevented) return;
-    
-    // Проверяем не та ли это же страница
+
+    // Получаем целевой путь
     const targetHref = typeof href === 'string' ? href : href.pathname || '';
-    if (currentPathname === targetHref) return;
+    
+    // Нормализуем пути для сравнения (убираем locale prefix)
+    const currentPath = pathname.replace(/^\/(en|ru)/, '') || '/';
+    const targetPath = targetHref.replace(/^\/(en|ru)/, '') || '/';
+
+    // Если это та же страница - не показываем loader
+    if (currentPath === targetPath) return;
 
     // Показываем loader
     showLoader();
-
-    // Скрываем loader через 2 секунды максимум (fallback)
-    const fallbackTimer = setTimeout(() => {
-      hideLoader();
-    }, 2000);
-
-    // Transition для отслеживания завершения навигации
-    startTransition(() => {
-      // Навигация произойдет автоматически через next-intl Link
-      // После завершения transition скрываем loader
-      Promise.resolve().then(() => {
-        clearTimeout(fallbackTimer);
-        // Минимальное время показа 300мс
-        setTimeout(() => {
-          hideLoader();
-        }, 300);
-      });
-    });
+    isNavigatingRef.current = true;
+    startTimeRef.current = Date.now();
   };
+
+  // Отслеживаем изменение pathname (завершение навигации)
+  useEffect(() => {
+    if (isNavigatingRef.current) {
+      const elapsedTime = Date.now() - startTimeRef.current;
+      const minDisplayTime = 300; // минимальное время показа
+      const remainingTime = Math.max(0, minDisplayTime - elapsedTime);
+
+      // Скрываем loader с учетом минимального времени показа
+      minDisplayTimerRef.current = setTimeout(() => {
+        hideLoader();
+        isNavigatingRef.current = false;
+      }, remainingTime);
+    }
+
+    return () => {
+      if (minDisplayTimerRef.current) {
+        clearTimeout(minDisplayTimerRef.current);
+      }
+    };
+  }, [pathname, hideLoader]);
 
   return <NextIntlLink href={href} onClick={handleClick} {...props} />;
 }

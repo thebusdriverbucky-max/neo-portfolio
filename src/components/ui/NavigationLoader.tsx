@@ -60,7 +60,7 @@ export default function NavigationLoader() {
         </div>
         {/* Текст */}
         <div className="text-center">
-          <p className="text-white text-xl font-bold mb-2">Загрузка страницы...</p>
+          <p className="text-white text-xl font-bold mb-2">Loading...</p>
           <div className="flex gap-1 justify-center">
             <span
               className="w-2 h-2 bg-gradient-to-r from-[#FFA500] to-[#FFD700] rounded-full animate-bounce"

@@ -1,6 +1,7 @@
 'use client';
 
-import { Link, usePathname } from '@/i18n/routing';
+import { Link } from '@/components/navigation/CustomLink'; // ИЗМЕНЕНО
+import { usePathname } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import LanguageSwitcher from '../ui/LanguageSwitcher';

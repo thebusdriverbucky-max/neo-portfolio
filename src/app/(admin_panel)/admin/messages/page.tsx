@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import MessageCard from '@/components/admin/MessageCard';
 import { Contact } from '@prisma/client';
+import Loader from '@/components/ui/Loader'; // ДОБАВЛЕНО
 
 export default function MessagesPage() {
   const [messages, setMessages] = useState<Contact[]>([]);
@@ -54,48 +55,54 @@ export default function MessagesPage() {
 
   const unreadCount = messages.filter(m => !m.read).length;
 
+  // ИЗМЕНЕНО: вместо <div>Loading...</div>
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader message="Загрузка сообщений..." size="md" />;
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Messages
-          </h1>
-          <p className="text-slate-400">
-            {unreadCount > 0 ? (
-              <span className="text-amber-400 font-bold">{unreadCount} new messages</span>
-            ) : (
-              'All messages read'
-            )}
-          </p>
-        </div>
-        
-        <button
-          onClick={handleDeleteAll}
-          disabled={messages.length === 0 || isDeleting}
-          className="px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 hover:bg-red-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isDeleting ? 'Удаление...' : 'Delete All'}
-        </button>
-      </div>
+    <>
+      {/* ДОБАВЛЕНО: Loader при удалении всех сообщений */}
+      {isDeleting && <Loader message="Удаление сообщений..." size="md" />}
 
-      {/* Messages List */}
-      {messages.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-slate-400 text-xl">No messages yet</p>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">
+              Messages
+            </h1>
+            <p className="text-slate-400">
+              {unreadCount > 0 ? (
+                <span className="text-amber-400 font-bold">{unreadCount} new messages</span>
+              ) : (
+                'All messages read'
+              )}
+            </p>
+          </div>
+          
+          <button
+            onClick={handleDeleteAll}
+            disabled={messages.length === 0 || isDeleting}
+            className="px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 hover:bg-red-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isDeleting ? 'Удаление...' : 'Delete All'}
+          </button>
         </div>
-      ) : (
-        <div className="space-y-4">
-          {messages.map((message) => (
-            <MessageCard key={message.id} message={message} />
-          ))}
-        </div>
-      )}
-    </div>
+
+        {/* Messages List */}
+        {messages.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-slate-400 text-xl">No messages yet</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {messages.map((message) => (
+              <MessageCard key={message.id} message={message} />
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
