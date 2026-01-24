@@ -80,7 +80,7 @@ export default function MessagesPage() {
               )}
             </p>
           </div>
-          
+
           <button
             onClick={handleDeleteAll}
             disabled={messages.length === 0 || isDeleting}

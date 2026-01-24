@@ -46,12 +46,20 @@ export default async function LocaleLayout({
   params
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: string }>;  // 👈 ИСПРАВЛЕНО!
 }) {
-  const { locale } = await params;
+  const { locale } = await params;  // 👈 ИСПРАВЛЕНО!
 
   // Проверка валидности локали
-  if (!routing.locales.includes(locale as any)) {
+  if (!(routing.locales as readonly string[]).includes(locale)) {
+    notFound();
+  }
+
+  // ... остальной код БЕЗ ИЗМЕНЕНИЙ
+
+
+  // Проверка валидности локали
+  if (!(routing.locales as readonly string[]).includes(locale)) {
     notFound();
   }
 

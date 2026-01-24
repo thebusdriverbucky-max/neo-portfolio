@@ -3,7 +3,8 @@ import ProjectCard from '@/components/ui/ProjectCard'
 import { prisma } from '@/lib/prisma'
 import { getTranslations } from 'next-intl/server';
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Portfolio.meta' });
   return {
     title: t('title'),
@@ -23,7 +24,8 @@ async function getProjects() {
   }
 }
 
-export default async function PortfolioPage({ params: { locale } }: { params: { locale: string } }) {
+export default async function PortfolioPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Portfolio' });
   const projects = await getProjects()
 

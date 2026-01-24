@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Lock, Mail, AlertCircle } from 'lucide-react'
 
@@ -30,7 +31,7 @@ export default function LoginPage() {
         router.push('/admin/dashboard')
         router.refresh()
       }
-    } catch (err) {
+    } catch {
       setError('Произошла ошибка при входе')
     } finally {
       setIsLoading(false)
@@ -102,9 +103,9 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-6 text-center">
-          <a href="/" className="text-sm text-white/70 hover:text-amber-400 transition-colors">
+          <Link href="/" className="text-sm text-white/70 hover:text-amber-400 transition-colors">
             ← Вернуться на сайт
-          </a>
+          </Link>
         </div>
       </div>
     </div>
