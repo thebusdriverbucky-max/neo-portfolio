@@ -1,7 +1,7 @@
-// src/app/api/auth/[...nextauth]/route.ts
 import { handlers } from '@/auth'
 
 export const { GET, POST } = handlers
 
-// Указываем Node.js runtime для совместимости с bcryptjs
+// ✅ КРИТИЧНО! Запрещаем статическую генерацию
+export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
