@@ -29,7 +29,7 @@ export function AdminSidebar({ unreadMessages }: { unreadMessages: number }) {
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-slate-800 to-slate-900 border-r border-amber-500/30 text-white hidden lg:flex flex-col">
       {/* Logo */}
-      <div className="px-6 py-4 border-b border-amber-500/30">
+      <div className="px-6 h-[72px] flex items-center border-b border-amber-500/30">
         <Link href="/admin/dashboard" className="block">
           <h2 className="text-2xl font-bold bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">
             Admin Panel
@@ -46,11 +46,10 @@ export function AdminSidebar({ unreadMessages }: { unreadMessages: number }) {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${
-                isActive
+              className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${isActive
                   ? 'bg-gradient-to-r from-[#FFA500] to-[#FFD700] text-slate-900 shadow-lg font-semibold'
                   : 'hover:bg-slate-700/50 text-white/70 hover:text-white border border-transparent hover:border-amber-500/30'
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
                 <Icon className="w-5 h-5 flex-shrink-0" />

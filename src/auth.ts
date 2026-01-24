@@ -48,6 +48,19 @@ const config: NextAuthConfig = {
     }),
   ],
   callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isLoginPage = nextUrl.pathname === '/admin/login';
+
+      if (isLoginPage) {
+        if (isLoggedIn) {
+          return Response.redirect(new URL('/admin/dashboard', nextUrl));
+        }
+        return true;
+      }
+
+      return isLoggedIn;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
