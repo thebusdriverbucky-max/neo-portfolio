@@ -7,10 +7,10 @@ import type { Prisma } from '@prisma/client';
 // GET - Get single project
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;  // 👈 await!
 
     const project = await prisma.project.findUnique({
       where: { id },
@@ -36,14 +36,13 @@ export async function GET(
 // PUT - Update project
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;  // 👈 await!
     const body = await request.json();
     const validatedData = partialProjectSchema.parse(body);
 
-    // Используем правильный тип Prisma
     const dataForUpdate: Prisma.ProjectUpdateInput = {};
 
     if (validatedData.title !== undefined) {
@@ -80,28 +79,28 @@ export async function PUT(
     });
 
     return NextResponse.json({ success: true, data: project });
-} catch (error: unknown) {
-  if (error instanceof z.ZodError) {
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { success: false, error: error.issues[0]?.message || 'Validation error' },
+        { status: 400 }
+      );
+    }
+    console.error('Error updating project:', error);
     return NextResponse.json(
-      { success: false, error: error.issues[0]?.message || 'Validation error' },
-      { status: 400 }
+      { success: false, error: 'Failed to update project' },
+      { status: 500 }
     );
   }
-  console.error('Error updating project:', error);
-  return NextResponse.json(
-    { success: false, error: 'Failed to update project' },
-    { status: 500 }
-  );
-}
 }
 
 // DELETE - Delete project
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;  // 👈 await!
 
     await prisma.project.delete({
       where: { id },

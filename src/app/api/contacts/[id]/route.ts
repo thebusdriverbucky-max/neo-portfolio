@@ -4,10 +4,10 @@ import { prisma } from '@/lib/prisma';
 // DELETE - Delete single message by ID
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;  // 👈 await!
 
     if (!id) {
       return NextResponse.json(
@@ -33,10 +33,10 @@ export async function DELETE(
 // PATCH - Mark single message as read
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;  // 👈 await!
 
     if (!id) {
       return NextResponse.json(
