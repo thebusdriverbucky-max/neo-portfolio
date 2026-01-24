@@ -5,9 +5,11 @@ import PageLayout from '@/components/layout/PageLayout'
 import { Alert } from '@/components/ui/Alert';
 import { Mail, MessageCircle, Send, Copy } from 'lucide-react'
 import { useTranslations } from 'next-intl';
+import { useLoader } from '@/contexts/LoaderContext';
 
 export default function ContactPage() {
   const t = useTranslations('Contact');
+  const { showLoader, hideLoader } = useLoader();
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
@@ -35,6 +37,7 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    showLoader();
     try {
       const response = await fetch('/api/contacts', {
         method: 'POST',
@@ -60,6 +63,7 @@ export default function ContactPage() {
       setAlertType('error');
       setShowAlert(true);
     } finally {
+      hideLoader();
       setTimeout(() => {
         setShowAlert(false);
       }, 5000);
@@ -159,7 +163,7 @@ export default function ContactPage() {
               </div>
               <button
                 type="submit"
-                className="w-full py-4 bg-gradient-to-r from-[#FFA500] to-[#FFD700] text-slate-900 font-bold rounded-lg hover:shadow-xl hover:scale-105 transition-all"
+                className="w-full py-4 bg-gradient-to-r from-[#FFA500] to-[#FFD700] text-slate-900 font-bold rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-500"
               >
                 {t('form.submit')}
               </button>

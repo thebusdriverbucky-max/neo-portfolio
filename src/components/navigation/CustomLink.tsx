@@ -12,6 +12,7 @@ export function Link({ href, onClick, ...props }: LinkProps) {
   const pathname = usePathname();
   const isNavigatingRef = useRef(false);
   const minDisplayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const maxTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(0);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -23,7 +24,7 @@ export function Link({ href, onClick, ...props }: LinkProps) {
 
     // Получаем целевой путь
     const targetHref = typeof href === 'string' ? href : href.pathname || '';
-    
+
     // Нормализуем пути для сравнения (убираем locale prefix)
     const currentPath = pathname.replace(/^\/(en|ru)/, '') || '/';
     const targetPath = targetHref.replace(/^\/(en|ru)/, '') || '/';
@@ -35,6 +36,15 @@ export function Link({ href, onClick, ...props }: LinkProps) {
     showLoader();
     isNavigatingRef.current = true;
     startTimeRef.current = Date.now();
+
+    // ✅ ФИКС: Принудительно скрываем через 10 секунд (если навигация зависла)
+    maxTimeoutRef.current = setTimeout(() => {
+      if (isNavigatingRef.current) {
+        console.warn('Navigation timeout - forcing loader hide');
+        hideLoader();
+        isNavigatingRef.current = false;
+      }
+    }, 10000);
   };
 
   // Отслеживаем изменение pathname (завершение навигации)
@@ -48,6 +58,12 @@ export function Link({ href, onClick, ...props }: LinkProps) {
       minDisplayTimerRef.current = setTimeout(() => {
         hideLoader();
         isNavigatingRef.current = false;
+
+        // Очищаем таймаут принудительного скрытия
+        if (maxTimeoutRef.current) {
+          clearTimeout(maxTimeoutRef.current);
+          maxTimeoutRef.current = null;
+        }
       }, remainingTime);
     }
 
@@ -55,8 +71,21 @@ export function Link({ href, onClick, ...props }: LinkProps) {
       if (minDisplayTimerRef.current) {
         clearTimeout(minDisplayTimerRef.current);
       }
+      if (maxTimeoutRef.current) {
+        clearTimeout(maxTimeoutRef.current);
+      }
     };
   }, [pathname, hideLoader]);
+
+  // ✅ ФИКС: Сбрасываем состояние при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      if (isNavigatingRef.current) {
+        hideLoader();
+        isNavigatingRef.current = false;
+      }
+    };
+  }, [hideLoader]);
 
   return <NextIntlLink href={href} onClick={handleClick} {...props} />;
 }
