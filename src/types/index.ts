@@ -76,9 +76,3 @@ export interface ApiResponse<T = any> {
   error?: string;
   message?: string;
 }
-
-export interface ProjectsResponse extends ApiResponse<Project[]> {}
-export interface ProjectResponse extends ApiResponse<Project> {}
-export interface ServicesResponse extends ApiResponse<Service[]> {}
-export interface ServiceResponse extends ApiResponse<Service> {}
-export interface ContactsResponse extends ApiResponse<Contact[]> {}
