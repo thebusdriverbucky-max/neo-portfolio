@@ -13,19 +13,16 @@ export default function NavigationLoader() {
     let hideTimer: NodeJS.Timeout;
 
     if (isLoading) {
-      // Появляемся через 150мс (не показываем на быстрых переходах)
       appearanceTimer = setTimeout(() => {
         setShouldRender(true);
-        // Небольшая задержка для плавного fade-in
         setTimeout(() => setIsVisible(true), 10);
       }, 150);
     } else if (shouldRender) {
-      // Сначала fade-out
-      setIsVisible(false);
-      // Потом убираем из DOM после анимации (300ms transition)
+      // ✅ ФИКС: используем setTimeout вместо прямого вызова
       hideTimer = setTimeout(() => {
-        setShouldRender(false);
-      }, 300);
+        setIsVisible(false);
+        setTimeout(() => setShouldRender(false), 300);
+      }, 0);
     }
 
     return () => {
@@ -38,9 +35,8 @@ export default function NavigationLoader() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/70 backdrop-blur-md transition-opacity duration-300 ${
-        isVisible ? 'opacity-100' : 'opacity-0'
-      }`}
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/70 backdrop-blur-md transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
     >
       <div className="flex flex-col items-center gap-6">
         {/* Золотой градиентный спиннер */}

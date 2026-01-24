@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // TODO: исправить 19 ESLint проблем после деплоя
   },
   images: {
     remotePatterns: [
@@ -17,7 +17,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Security headers
   async headers() {
     return [
       {
@@ -38,11 +37,6 @@ const nextConfig: NextConfig = {
         ],
       },
     ]
-  },
-  // Workaround for Windows build issue with dynamic routes
-  webpack: (config, { isServer }) => {
-    config.cache = false;
-    return config;
   },
 };
 
