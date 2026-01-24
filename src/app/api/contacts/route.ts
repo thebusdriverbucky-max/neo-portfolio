@@ -12,12 +12,10 @@ interface RateLimitEntry {
 
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
-// Настройки rate limit
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 минута в миллисекундах
-const MAX_REQUESTS = 3; // Максимум 3 запроса в минуту
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 минута
+const MAX_REQUESTS = 3; // 3 запроса в минуту
 
 function getRateLimitKey(request: NextRequest): string {
-  // Получаем IP из заголовков (работает на Vercel)
   const forwarded = request.headers.get('x-forwarded-for');
   const ip = forwarded ? forwarded.split(',')[0] : 
              request.headers.get('x-real-ip') || 
@@ -29,7 +27,6 @@ function checkRateLimit(key: string): { allowed: boolean; remaining: number; res
   const now = Date.now();
   const entry = rateLimitMap.get(key);
 
-  // Если нет записи или время сброса прошло - создаем новую
   if (!entry || now > entry.resetTime) {
     rateLimitMap.set(key, {
       count: 1,
@@ -38,13 +35,11 @@ function checkRateLimit(key: string): { allowed: boolean; remaining: number; res
     return { allowed: true, remaining: MAX_REQUESTS - 1, resetIn: RATE_LIMIT_WINDOW };
   }
 
-  // Проверяем лимит
   if (entry.count >= MAX_REQUESTS) {
     const resetIn = entry.resetTime - now;
     return { allowed: false, remaining: 0, resetIn };
   }
 
-  // Увеличиваем счетчик
   entry.count++;
   rateLimitMap.set(key, entry);
   
@@ -55,7 +50,6 @@ function checkRateLimit(key: string): { allowed: boolean; remaining: number; res
   };
 }
 
-// Очистка старых записей каждые 5 минут
 setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of rateLimitMap.entries()) {
@@ -66,12 +60,10 @@ setInterval(() => {
 }, 5 * 60 * 1000);
 
 // ============================================
-// API ROUTES
+// POST - Create new contact
 // ============================================
-
 export async function POST(request: NextRequest) {
   try {
-    // ✅ ПРОВЕРКА RATE LIMIT
     const rateLimitKey = getRateLimitKey(request);
     const { allowed, remaining, resetIn } = checkRateLimit(rateLimitKey);
 
@@ -98,7 +90,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, email, message } = body;
 
-    // Валидация
     if (!name || !email || !message) {
       return NextResponse.json(
         { success: false, error: 'All fields are required' },
@@ -106,7 +97,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -115,12 +105,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Сохранить в БД
     const contact = await prisma.contact.create({
       data: { name, email, message },
     });
 
-    // Отправить email
     try {
       const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_SERVER_HOST,
@@ -155,7 +143,7 @@ export async function POST(request: NextRequest) {
       };
 
       await transporter.sendMail(mailOptions);
-      console.log(`✅ Email sent successfully to ${process.env.EMAIL_RECIPIENT || process.env.EMAIL_SERVER_USER}`);
+      console.log(`✅ Email sent successfully`);
     } catch (emailError) {
       console.error('⚠️ Email sending failed (but message saved to DB):', emailError);
     }
@@ -180,6 +168,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// ============================================
+// GET - Get all contacts
+// ============================================
 export async function GET() {
   try {
     const messages = await prisma.contact.findMany({
@@ -190,61 +181,6 @@ export async function GET() {
     console.error("Error fetching contacts:", error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch contacts" },
-      { status: 500 }
-    );
-  }
-}
-
-// PATCH - Mark as Read
-export async function PATCH(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { id } = body;
-
-    if (!id) {
-      return NextResponse.json(
-        { success: false, error: "ID is required" },
-        { status: 400 }
-      );
-    }
-
-    const updated = await prisma.contact.update({
-      where: { id },
-      data: { read: true }
-    });
-
-    return NextResponse.json({ success: true, data: updated });
-  } catch (error) {
-    console.error("Error updating contact:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to update contact" },
-      { status: 500 }
-    );
-  }
-}
-
-// DELETE - Delete message
-export async function DELETE(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json(
-        { success: false, error: "ID is required" },
-        { status: 400 }
-      );
-    }
-
-    await prisma.contact.delete({
-      where: { id }
-    });
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error deleting contact:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to delete contact" },
       { status: 500 }
     );
   }

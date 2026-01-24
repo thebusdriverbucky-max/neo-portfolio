@@ -1,27 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
+import { partialProjectSchema } from '@/lib/schemas';
 import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
 
-const projectUpdateSchema = z.object({
-  title: z.string().min(1, 'Название обязательно').optional(),
-  description: z.string().min(1, 'Описание обязательно').optional(),
-  longDescription: z.string().optional(),
-  imageUrl: z.string().min(1, 'URL изображения обязателен').optional(),
-  demoUrl: z.string().url('Неверный формат URL').optional().or(z.literal('')),
-  githubUrl: z.string().url('Неверный формат URL').optional().or(z.literal('')),
-  technologies: z.array(z.string()).min(1, 'Добавьте хотя бы одну технологию').optional(),
-  featured: z.boolean().optional(),
-  order: z.number().optional(),
-});
-
-// GET single project
+// GET - Get single project
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
+
     const project = await prisma.project.findUnique({
       where: { id },
     });
@@ -43,85 +33,81 @@ export async function GET(
   }
 }
 
-// PUT update project
+// PUT - Update project
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-
-    if (!session || session.user.role !== 'admin') {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const { id } = await params;
+    const { id } = params;
     const body = await request.json();
-    const validationResult = projectUpdateSchema.safeParse(body);
+    const validatedData = partialProjectSchema.parse(body);
 
-    if (!validationResult.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Validation error',
-          details: validationResult.error.issues,
-        },
-        { status: 400 }
-      );
+    // Используем правильный тип Prisma
+    const dataForUpdate: Prisma.ProjectUpdateInput = {};
+
+    if (validatedData.title !== undefined) {
+      dataForUpdate.title = validatedData.title;
     }
-
-    const data = validationResult.data;
+    if (validatedData.description !== undefined) {
+      dataForUpdate.description = validatedData.description;
+    }
+    if (validatedData.imageUrl !== undefined) {
+      dataForUpdate.imageUrl = validatedData.imageUrl;
+    }
+    if (validatedData.technologies !== undefined) {
+      dataForUpdate.technologies = validatedData.technologies;
+    }
+    if (validatedData.longDescription !== undefined) {
+      dataForUpdate.longDescription = validatedData.longDescription || null;
+    }
+    if (validatedData.demoUrl !== undefined) {
+      dataForUpdate.demoUrl = validatedData.demoUrl || null;
+    }
+    if (validatedData.githubUrl !== undefined) {
+      dataForUpdate.githubUrl = validatedData.githubUrl || null;
+    }
+    if (validatedData.featured !== undefined) {
+      dataForUpdate.featured = validatedData.featured;
+    }
+    if (validatedData.order !== undefined) {
+      dataForUpdate.order = validatedData.order;
+    }
 
     const project = await prisma.project.update({
       where: { id },
-      data: {
-        ...(data.title !== undefined && { title: data.title }),
-        ...(data.description !== undefined && { description: data.description }),
-        ...(data.longDescription !== undefined && { longDescription: data.longDescription }),
-        ...(data.imageUrl !== undefined && { imageUrl: data.imageUrl }),
-        ...(data.demoUrl !== undefined && { demoUrl: data.demoUrl || null }),
-        ...(data.githubUrl !== undefined && { githubUrl: data.githubUrl || null }),
-        ...(data.technologies !== undefined && { technologies: data.technologies }),
-        ...(data.featured !== undefined && { featured: data.featured }),
-        ...(data.order !== undefined && { order: data.order }),
-      },
+      data: dataForUpdate,
     });
 
     return NextResponse.json({ success: true, data: project });
-  } catch (error) {
-    console.error('Error updating project:', error);
+} catch (error: unknown) {
+  if (error instanceof z.ZodError) {
     return NextResponse.json(
-      { success: false, error: 'Failed to update project' },
-      { status: 500 }
+      { success: false, error: error.issues[0]?.message || 'Validation error' },
+      { status: 400 }
     );
   }
+  console.error('Error updating project:', error);
+  return NextResponse.json(
+    { success: false, error: 'Failed to update project' },
+    { status: 500 }
+  );
+}
 }
 
-// DELETE project
+// DELETE - Delete project
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-
-    if (!session || session.user.role !== 'admin') {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const { id } = await params;
+    const { id } = params;
 
     await prisma.project.delete({
       where: { id },
     });
 
-    return NextResponse.json({ success: true, message: 'Project deleted' });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting project:', error);
     return NextResponse.json(
