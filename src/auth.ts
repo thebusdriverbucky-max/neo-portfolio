@@ -22,7 +22,7 @@ const config: NextAuthConfig = {
         })
 
         if (!user || !user.password) {
-          throw new Error('Неверный email или пароль')
+          throw new Error('Неверные учетные данные')
         }
 
         const isValid = await verifyPassword(
@@ -31,7 +31,7 @@ const config: NextAuthConfig = {
         )
 
         if (!isValid) {
-          throw new Error('Неверный email или пароль')
+          throw new Error('Неверные учетные данные')
         }
 
         if (user.role !== 'admin') {
@@ -48,18 +48,20 @@ const config: NextAuthConfig = {
     }),
   ],
   callbacks: {
+    // ✅ ПРАВИЛЬНЫЙ authorized callback
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isLoginPage = nextUrl.pathname === '/admin/login';
+      const isOnAdminPanel = nextUrl.pathname.includes('/admin');
+      const isOnLoginPage = nextUrl.pathname.includes('/admin/login');
 
-      if (isLoginPage) {
-        if (isLoggedIn) {
-          return Response.redirect(new URL('/admin/dashboard', nextUrl));
+      if (isOnAdminPanel) {
+        if (isOnLoginPage) {
+          return true; // Всегда разрешаем доступ к login
         }
-        return true;
+        return isLoggedIn; // Для остальных /admin/* требуем auth
       }
 
-      return isLoggedIn;
+      return true; // Публичные страницы доступны всем
     },
     async jwt({ token, user }) {
       if (user) {

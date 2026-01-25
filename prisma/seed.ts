@@ -1,14 +1,46 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Начинаем заполнение базы данных...')
 
+  // Проверка наличия env переменных для админа
+  const adminEmail = process.env.ADMIN_EMAIL
+  const adminPassword = process.env.ADMIN_PASSWORD
+
+  if (!adminEmail || !adminPassword) {
+    console.warn('⚠️  ADMIN_EMAIL или ADMIN_PASSWORD не указаны в .env - пропускаем создание админа')
+  }
+
   // Очистка существующих данных перед заполнением
   console.log('🧹 Очищаем существующие данные...')
+  await prisma.contact.deleteMany()
   await prisma.project.deleteMany()
   await prisma.service.deleteMany()
+
+  // Создание администратора
+  if (adminEmail && adminPassword) {
+    console.log('👤 Создаем администратора...')
+    const hashedPassword = await bcrypt.hash(adminPassword, 10)
+
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {
+        password: hashedPassword,
+        role: 'admin',
+      },
+      create: {
+        email: adminEmail,
+        name: 'Admin',
+        password: hashedPassword,
+        role: 'admin',
+        emailVerified: new Date(),
+      },
+    })
+    console.log(`✅ Админ создан: ${adminEmail}`)
+  }
 
   // Создание проектов
   console.log('📁 Создаем проекты...')
@@ -91,6 +123,7 @@ async function main() {
 
   console.log('✅ База данных успешно заполнена начальными данными!')
   console.log('📊 Статистика:')
+  console.log(`   - Пользователей: ${await prisma.user.count()}`)
   console.log(`   - Проектов: ${await prisma.project.count()}`)
   console.log(`   - Услуг: ${await prisma.service.count()}`)
 }
