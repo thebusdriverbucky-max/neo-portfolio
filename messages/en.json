@@ -4,8 +4,26 @@
     "description": "Welcome to my portfolio website"
   },
   "HomePage": {
-    "title": "Hello world!",
-    "about": "Go to the about page"
+    "title": "About Me",
+    "about": "Go to the about page",
+    "description1": "Hello! I am a full-stack developer with experience in creating modern web applications. I specialize in Next.js, React, and TypeScript.",
+    "description2": "I help businesses and private clients bring ideas to life through high-quality code and thoughtful design.",
+    "stats": {
+      "experience": {
+        "value": "2+",
+        "label": "Years of Experience"
+      },
+      "projects": {
+        "value": "10+",
+        "label": "Projects"
+      },
+      "clients": {
+        "value": "99%",
+        "label": "Satisfied"
+      }
+    },
+    "more": "Learn More",
+    "imageAlt": "Developer"
   },
   "Navigation": {
     "home": "Home",
@@ -27,8 +45,9 @@
       "title": "About Me | Portfolio",
       "description": "Learn more about my development experience"
     },
-    "description1": "Hello! I am a full-stack developer with experience in creating modern web applications. I specialize in Next.js, React, and TypeScript.",
+    "description1": "I am a full-stack developer with experience in creating modern web applications. My approach is uniquely shaped by an art school background and a degree in International Law, allowing me to merge design aesthetics with legal-grade precision",
     "description2": "I help businesses and private clients bring ideas to life through high-quality code and thoughtful design.",
+    "description3": "Having worked in a family business since 2019, I see projects through a commercial lens. I ensure every line of code serves your strategic goals and accelerates growth",
     "subtitle": "Learn more about my experience and approach to development",
     "greeting": "Hello! 👋",
     "skills": {

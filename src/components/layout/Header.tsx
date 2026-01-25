@@ -37,9 +37,9 @@ export default function Header() {
             href="/"
             className="font-bold transition-all duration-300 flex items-center gap-3 group"
           >
-            <img 
-              src="/images/logo/favicon.png" 
-              alt="Logo" 
+            <img
+              src="/images/logo/favicon.png"
+              alt="Logo"
               className={cn(
                 "h-10 w-auto transition-all duration-300",
                 isScrolled
@@ -88,10 +88,7 @@ export default function Header() {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className={cn(
-            'md:hidden mt-4 pb-4 transition-colors duration-300',
-            isScrolled
-              ? 'bg-slate-900/95'
-              : 'bg-gradient-to-r from-[#FFA500]/90 via-[#FFB84D]/90 to-[#FFD700]/90'
+            'md:hidden mt-4 pb-4 transition-colors duration-300'
           )}>
             <Navigation
               mobile

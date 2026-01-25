@@ -40,6 +40,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <p className="text-white/80 leading-relaxed">
               {t('description2')}
             </p>
+            <p className="text-white/80 leading-relaxed">
+              {t('description3')}
+            </p>
           </div>
         </div>
 

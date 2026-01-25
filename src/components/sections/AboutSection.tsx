@@ -8,7 +8,7 @@ import WaveDivider from '@/components/ui/WaveDivider';
 import { useTranslations } from 'next-intl';
 
 export function AboutSection() {
-  const t = useTranslations('About');
+  const t = useTranslations('HomePage');
 
   return (
     <section className="relative py-16 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700" id="about">
