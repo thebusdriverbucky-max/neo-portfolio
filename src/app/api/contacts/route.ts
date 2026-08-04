@@ -1,86 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import nodemailer from 'nodemailer';
+import { redis, withPrefix } from '@/lib/redis';
+import { Ratelimit } from "@upstash/ratelimit";
 
 // ============================================
-// RATE LIMITING SETUP
+// RATE LIMITING SETUP (Upstash Redis)
 // ============================================
-interface RateLimitEntry {
-  count: number;
-  resetTime: number;
-}
-
-const rateLimitMap = new Map<string, RateLimitEntry>();
-
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 минута
-const MAX_REQUESTS = 3; // 3 запроса в минуту
+const ratelimit = new Ratelimit({
+  redis: redis,
+  limiter: Ratelimit.slidingWindow(3, "60 s"),
+  prefix: withPrefix("ratelimit"),
+});
 
 function getRateLimitKey(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');
-  const ip = forwarded ? forwarded.split(',')[0] : 
-             request.headers.get('x-real-ip') || 
-             'unknown';
-  return `contact_${ip}`;
+  const ip = forwarded ? forwarded.split(',')[0] :
+    request.headers.get('x-real-ip') ||
+    'unknown';
+  return ip;
 }
-
-function checkRateLimit(key: string): { allowed: boolean; remaining: number; resetIn: number } {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-
-  if (!entry || now > entry.resetTime) {
-    rateLimitMap.set(key, {
-      count: 1,
-      resetTime: now + RATE_LIMIT_WINDOW
-    });
-    return { allowed: true, remaining: MAX_REQUESTS - 1, resetIn: RATE_LIMIT_WINDOW };
-  }
-
-  if (entry.count >= MAX_REQUESTS) {
-    const resetIn = entry.resetTime - now;
-    return { allowed: false, remaining: 0, resetIn };
-  }
-
-  entry.count++;
-  rateLimitMap.set(key, entry);
-  
-  return { 
-    allowed: true, 
-    remaining: MAX_REQUESTS - entry.count,
-    resetIn: entry.resetTime - now 
-  };
-}
-
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, entry] of rateLimitMap.entries()) {
-    if (now > entry.resetTime) {
-      rateLimitMap.delete(key);
-    }
-  }
-}, 5 * 60 * 1000);
 
 // ============================================
 // POST - Create new contact
 // ============================================
 export async function POST(request: NextRequest) {
   try {
-    const rateLimitKey = getRateLimitKey(request);
-    const { allowed, remaining, resetIn } = checkRateLimit(rateLimitKey);
+    const identifier = getRateLimitKey(request);
+    const { success, limit, reset, remaining } = await ratelimit.limit(identifier);
 
-    if (!allowed) {
-      const resetInSeconds = Math.ceil(resetIn / 1000);
+    if (!success) {
+      const now = Date.now();
+      const resetInSeconds = Math.ceil((reset - now) / 1000);
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: `Too many requests. Please try again in ${resetInSeconds} seconds.`,
           retryAfter: resetInSeconds
         },
-        { 
+        {
           status: 429,
           headers: {
-            'X-RateLimit-Limit': MAX_REQUESTS.toString(),
+            'X-RateLimit-Limit': limit.toString(),
             'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': new Date(Date.now() + resetIn).toISOString(),
+            'X-RateLimit-Reset': new Date(reset).toISOString(),
             'Retry-After': resetInSeconds.toString()
           }
         }
@@ -150,10 +114,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { success: true, data: contact },
-      { 
+      {
         status: 201,
         headers: {
-          'X-RateLimit-Limit': MAX_REQUESTS.toString(),
+          'X-RateLimit-Limit': limit.toString(),
           'X-RateLimit-Remaining': remaining.toString()
         }
       }
@@ -173,6 +137,15 @@ export async function POST(request: NextRequest) {
 // ============================================
 export async function GET() {
   try {
+    const session = await auth();
+
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const messages = await prisma.contact.findMany({
       orderBy: { createdAt: 'desc' },
     });

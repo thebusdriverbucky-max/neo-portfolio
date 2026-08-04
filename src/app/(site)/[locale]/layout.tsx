@@ -55,14 +55,6 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // ... остальной код БЕЗ ИЗМЕНЕНИЙ
-
-
-  // Проверка валидности локали
-  if (!(routing.locales as readonly string[]).includes(locale)) {
-    notFound();
-  }
-
   const messages = await getMessages();
 
   return (

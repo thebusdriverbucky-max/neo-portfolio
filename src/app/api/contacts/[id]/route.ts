@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 
 // DELETE - Delete single message by ID
@@ -7,6 +8,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
+    const session = await auth();
+
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;  // 👈 await!
 
     if (!id) {
@@ -36,6 +46,15 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
+    const session = await auth();
+
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;  // 👈 await!
 
     if (!id) {

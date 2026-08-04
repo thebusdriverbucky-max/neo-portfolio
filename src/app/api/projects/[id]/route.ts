@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { partialProjectSchema } from '@/lib/schemas';
 import { z } from 'zod';
@@ -39,6 +40,15 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
+    const session = await auth();
+
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;  // 👈 await!
     const body = await request.json();
     const validatedData = partialProjectSchema.parse(body);
@@ -100,6 +110,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }  // 👈 Promise!
 ) {
   try {
+    const session = await auth();
+
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;  // 👈 await!
 
     await prisma.project.delete({

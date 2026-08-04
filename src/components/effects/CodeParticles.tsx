@@ -102,6 +102,7 @@ export default function CodeParticles() {
       texts
         .enter()
         .append('text')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .merge(texts as any)
         .attr('x', d => d.x)
         .attr('y', d => d.y)

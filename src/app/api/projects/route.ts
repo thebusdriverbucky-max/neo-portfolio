@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { projectSchema } from '@/lib/schemas';
 import { z } from 'zod';
@@ -27,6 +28,15 @@ export async function GET() {
 // POST - Create new project
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
+
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const validatedData = projectSchema.parse(body);
 
@@ -50,17 +60,17 @@ export async function POST(request: NextRequest) {
       { success: true, data: project },
       { status: 201 }
     );
-} catch (error: unknown) {
-  if (error instanceof z.ZodError) {
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { success: false, error: error.issues[0]?.message || 'Validation error' },
+        { status: 400 }
+      );
+    }
+    console.error('Error updating project:', error);
     return NextResponse.json(
-      { success: false, error: error.issues[0]?.message || 'Validation error' },
-      { status: 400 }
+      { success: false, error: 'Failed to update project' },
+      { status: 500 }
     );
   }
-  console.error('Error updating project:', error);
-  return NextResponse.json(
-    { success: false, error: 'Failed to update project' },
-    { status: 500 }
-  );
-}
 }
