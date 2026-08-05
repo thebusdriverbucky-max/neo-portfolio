@@ -128,7 +128,7 @@ export default function CodeParticles() {
     <svg
       ref={svgRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ zIndex: 1 }}
+      style={{ zIndex: 1, contain: 'strict', overflowAnchor: 'none' }}
     />
   )
 }
