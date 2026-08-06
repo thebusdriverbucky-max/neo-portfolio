@@ -203,8 +203,8 @@
     "allProjects": "Все проекты",
     "items": {
       "ecommerce": {
-        "title": "E-commerce платформа",
-        "description": "Современный интернет-магазин с корзиной и оплатой"
+        "title": "Template Marketplace",
+        "description": "Платформа для шаблонов без подписки"
       },
       "corporate": {
         "title": "Корпоративный сайт",

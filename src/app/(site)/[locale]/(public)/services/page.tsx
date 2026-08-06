@@ -135,7 +135,7 @@ export default async function PageName({ params }: { params: Promise<{ locale: s
           </div>
           <div className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 rounded-2xl p-6 border-2 border-amber-500/30 text-center">
             <div className="text-5xl font-bold bg-gradient-to-r from-[#FFA500] to-[#FFD700] bg-clip-text text-transparent mb-2">
-              10+
+              20+
             </div>
             <p className="text-white/80">{t('whyMe.projects')}</p>
           </div>
